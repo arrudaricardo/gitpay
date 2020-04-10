@@ -36,9 +36,14 @@ exports.createPrivateTask = (req, res) => {
   const githubClientId = secrets.github.id
   const githubClientSecret = secrets.github.secret
   return requestPromise({
-    uri: `https://github.com/login/oauth/access_token/?client_id=${githubClientId}&client_secret=${githubClientSecret}&code=${code}`,
+    method: 'POST',
+    uri: 'https://github.com/login/oauth/access_token/',
     headers: {
-      'User-Agent': 'octonode/0.3 (https://github.com/pksunkara/octonode) terminal/0.0'
+      'User-Agent': 'octonode/0.3 (https://github.com/pksunkara/octonode) terminal/0.0',
+      Authorization: 'Basic ' + Buffer.from(`${githubClientId}:${githubClientSecret}`).toString('base64')
+    },
+    body: {
+      code
     },
     json: true
   }).then(response => {
